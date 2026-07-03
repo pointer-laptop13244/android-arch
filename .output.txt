@@ -1,0 +1,7 @@
+[K
+[KInstalled containers:
+[K
+[K  * debian
+[K
+[KLog in with: proot-distro login <name>
+[K

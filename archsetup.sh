@@ -1,4 +1,5 @@
 #!/bin/bash
+#By the way, I copied and pasted it into a VERY useful tool called shellcheck.net. That's why I deleted everything and then pasted the newly fixed one.
 clear
 #echo "----------------------------------------------------------"
 echo "-----> PROMPT"
@@ -12,7 +13,7 @@ echo " "
 echo "This Key: To Mark This Choice"
 echo "Y = Continue"
 echo "N = Quit"
-read -p "Choice: " -N 1 $CHOICE
+read -p "Choice: " -N 1 -r CHOICE
 case "$CHOICE" in
 	y|Y)
 		clear
@@ -38,7 +39,7 @@ case "$CHOICE" in
 		echo "Y = Continue"
 		echo "N = Quit"
 		#
-		read -p "Choice: " -N 1 $CHOICE
+		read -p "Choice: " -N 1 -r CHOICE
 		case "$CHOICE" in
 			y|Y)
 				clear
@@ -53,7 +54,7 @@ case "$CHOICE" in
 				echo "G = My Device is Not Rooted (good!)"
 				echo "N = Quit"
 			        #
-				read -p "Choice: " -N 1 $CHOICE
+				read -p "Choice: " -N 1 -r CHOICE
 				case "$CHOICE" in
 					r|R)
 						clear
@@ -61,6 +62,7 @@ case "$CHOICE" in
 						;;
 					g|G)
 						#Good! I wouldn't do it either."
+						clear
 						echo "-----> PROCESS"
 						echo "Updating your repository..."
 						pkg update -y >/dev/null 2>&1
@@ -74,7 +76,7 @@ case "$CHOICE" in
 								echo "C = Continue anyway"
 								echo "N = Quit now"
 								#
-								read -p "Choice: " -N 1 $CHOICE
+								read -p "Choice: " -N 1 -r CHOICE
 								case "$CHOICE" in
 									c|C)
 										;;
@@ -89,6 +91,7 @@ case "$CHOICE" in
 										exit
 										;;
 								esac
+
 						echo "Installing proot-distro..."
 						pkg install proot-distro -y >/dev/null 2>&1
 						case "$?" in
@@ -101,7 +104,7 @@ case "$CHOICE" in
 								echo "C = Continue anyway"
 								echo "N = Quit now"
 								#
-								read -p "Choice: " -N 1 $CHOICE
+								read -p "Choice: " -N 1 -r CHOICE
 								case "$CHOICE" in
 									c|C)
 										;;
@@ -132,7 +135,7 @@ case "$CHOICE" in
 						echo "C = Custom Distro"
 						echo "L = List All Avalible Distros"
 						echo "N = Quit"
-						read -p "Choice: " -N 1 $CHOICE
+						read -p "Choice: " -N 1 -r CHOICE
 						case "$CHOICE" in
 							1)
 								INSTALL="archlinux"
@@ -159,7 +162,7 @@ case "$CHOICE" in
 								INSTALL="kalilinux/kali-rolling"
 								;;
 							c|C)
-								read -p "Distro: " $INSTALL
+								read -p "Distro: " -r INSTALL
 								;;
 							l|L)
 								clear
@@ -168,7 +171,7 @@ case "$CHOICE" in
 								echo "---"
 								proot-distro list
 								echo "---"
-								read -p "Distro: " $INSTALL
+								read -p "Distro: " -r INSTALL
 								;;
 							n|N)
 								clear
@@ -185,32 +188,32 @@ case "$CHOICE" in
 							echo "-----> PROCESS"
 							echo "Installing your chosen distro...."
 							echo "+++ This may take a while, don't assume it hung! +++"
-							proot-distro install $DISTRO >/dev/null 2>&1
+							proot-distro install "$INSTALL" >/dev/null 2>&1
 							case "$?" in
-							0)
-								echo "Success"
-								;;
-							*)
-								echo "Failure! Exit Code $?."
-								echo "This Key: To Mark This Choice"
-								echo "C = Continue anyway"
-								echo "N = Quit now"
-								#
-								read -p "Choice: " -N 1 $CHOICE
-								case "$CHOICE" in
-									c|C)
-										;;
-									n|N)
-										clear
-										echo "User Canceled"
-										exit
-										;;
-									*) 
-										clear
-										echo "Something went wrong, assuming user canceled."
-										exit
-										;;
-								esac
+						        	0)
+							        	echo "Success"
+								        ;;
+							        *)
+								        echo "Failure! Exit Code $?."
+								        echo "This Key: To Mark This Choice"
+								        echo "C = Continue anyway"
+								        echo "N = Quit now"
+								        #
+								        read -p "Choice: " -N 1 -r CHOICE
+								        case "$CHOICE" in
+								        	c|C)
+									        	;;
+									        n|N)
+									        	clear
+										        echo "User Canceled"
+										        exit
+										        ;;
+									        *) 
+										        clear
+										        echo "Something went wrong, assuming user canceled."
+										        exit
+										        ;;
+								        esac
 						clear
 						echo "-----> INFO"
 						echo "Android PPK issue"
@@ -225,7 +228,7 @@ case "$CHOICE" in
 						echo "This Key: To Mark This Choice"
 						echo "Y = Continue"
 						echo "N = Quit"
-						read -p "Choice: " -N 1 $CHOICE
+						read -p "Choice: " -N 1 -r CHOICE
 						case "$CHOICE" in
 							y|Y)
 								clear
@@ -236,15 +239,15 @@ case "$CHOICE" in
 								echo "This Key: To Mark This Choice"
 								echo "Y = Continue"
 								echo "N = Quit"
-								read -p "Choice: " -N 1 $CHOICE
+								read -p "Choice: " -N 1 -r CHOICE
 								case "$CHOICE" in
 									y|Y)
 										clear
 										echo "-----> OPERATION"
 										echo "Loading Proot Enviorment to continue the setup. Please wait..."
 										touch .distro.txt
-										echo "$DISTRO" >> .distro.txt
-										proot-distro login $DISTRO -- bash -c "cd $PWD && ./nextstep.sh"
+										echo "$INSTALL" >> .distro.txt
+										proot-distro login "$INSTALL" -- bash -c "cd $PWD && ./nextstep.sh"
 										clear
 										exit
 										;;
@@ -261,7 +264,7 @@ case "$CHOICE" in
 						esac
 
 								;;
-							n/N)
+							n|N)
 								clear
 								echo "User canceled"
 								;;
@@ -300,4 +303,7 @@ case "$CHOICE" in
 		clear
 		echo "User did not choose a valid option. Assuming they chose to quit."
 		;;
+esac
+esac
+esac
 esac
